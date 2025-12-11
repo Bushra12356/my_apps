@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nevigation/AboutScreen.dart';
+import 'package:nevigation/SecondScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,33 +12,45 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'my app',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'first app'),
+      title: 'Named Routes Demo',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/SecondPage': (context) => const SecondPage(),
+        '/about': (context) => const AboutScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: const Text('Home')),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Hollo to my app',
-              style: TextStyle(fontSize: 24),
+          children: [
+             ElevatedButton(
+              onPressed: () async{
+                final result = await Navigator.pushNamed(
+                  context,'/SecondPage'
+                )as bool?;
+                if (result != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(result?'You selected accept':'you selected not to accept')),
+                  );
+                }
+                },
+               child: const Text('Go to selection screen'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/about');
+              },
+              child: const Text('Go to About'),
             ),
           ],
         ),
